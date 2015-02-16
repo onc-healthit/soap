@@ -17,9 +17,9 @@ public class ResourceManager {
 	
 	private ResourceManager()
 	{
-		loadConceptCodes("gov/onc/xdrtest/resource/ConceptCodes.properties");
-		loadConceptNameSpecialityAreas("gov/onc/xdrtest/resource/ConceptNameSpecialityArea.properties");
-		loadContextMetadataTypes("gov/onc/xdrtest/resource/XDSContextMetadataTypes.properties");
+		loadConceptCodes("gov/onc/xdrtesttool/resource/ConceptCodes.properties");
+		loadConceptNameSpecialityAreas("gov/onc/xdrtesttool/resource/ConceptNameSpecialityArea.properties");
+		loadContextMetadataTypes("gov/onc/xdrtesttool/resource/XDSContextMetadataTypes.properties");
 	}
 	
 	public List<String> getConceptCodes()

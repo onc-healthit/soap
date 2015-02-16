@@ -30,14 +30,14 @@ public class XMLParser {
 		try {
 			parser = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(infile));
 		} catch (XMLStreamException e) {
-			throw new XMLParserException("gov.onc.xdrtest.xml: Could not create XMLStreamReader from " + filename, null);
+			throw new XMLParserException("gov.onc.xdrtesttool.xml: Could not create XMLStreamReader from " + filename, null);
 		} catch (FileNotFoundException e) {
-			throw new XMLParserException("gov.onc.xdrtest.xml: Could not find input file " + filename, null);
+			throw new XMLParserException("gov.onc.xdrtesttool.xml: Could not find input file " + filename, null);
 		}
 
 		StAXOMBuilder builder = new StAXOMBuilder(parser);
 		OMElement documentElement =  builder.getDocumentElement();	
-		if (documentElement == null) throw new XMLParserException("gov.onc.xdrtest.xml: No document element", null);
+		if (documentElement == null) throw new XMLParserException("gov.onc.xdrtesttool.xml: No document element", null);
 		return documentElement;
 	}
 
@@ -49,7 +49,7 @@ public class XMLParser {
 		try {
 			parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(ba));
 		} catch (XMLStreamException e) {
-			throw new XMLParserException("gov.onc.xdrtest.xml: Could not create XMLStreamReader from " + "input stream", null);
+			throw new XMLParserException("gov.onc.xdrtesttool.xml: Could not create XMLStreamReader from " + "input stream", null);
 		}
 		StAXOMBuilder builder = new StAXOMBuilder(parser);
 		OMElement documentElement =  builder.getDocumentElement();

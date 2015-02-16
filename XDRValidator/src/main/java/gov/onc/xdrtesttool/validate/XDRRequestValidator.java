@@ -36,11 +36,17 @@ public class XDRRequestValidator extends XDRValidator {
 
 			OMElement element = XMLParser.parseXMLSource(soapMsg
 					.getPayloadSource());
-			// Test ID: 4
 			// Element Namespace is already verified
+			//S:Envelope/S:Body/xdsb:ProvideAndRegisterDocumentSetRequest
+			//Verify:
+			//- Element is namespace qualified.
+			//- Order of subelements is lcm:SubmitObjectsRequest, xdsb:Document."
+
 			validateProvideAndRegisterDocumentSetRequest(element);
 
 			// Test ID: 5
+			//lcm:SubmitObjectsRequest
+			//Description: The SubmitObjectsRequest allows one to submit a list of RegistryObject elements. Each RegistryEntry element provides metadata for a single submitted object.
 			Iterator iterator = element
 					.getChildrenWithLocalName("SubmitObjectsRequest");
 			if (iterator.hasNext()) {
@@ -73,6 +79,8 @@ public class XDRRequestValidator extends XDRValidator {
 									"RegistryRequestType", MessageType.Info);
 
 						// Test ID: 8
+						//rs:RequestSlotList
+						//Description: From rs:RegistryRequestType.  Every request may be extended using Slots. These aren't used by the Exchange specs, but are legal if included.
 						iter = rrtElement
 								.getChildrenWithLocalName("RequestSlotList");
 						if (!iter.hasNext())
@@ -85,6 +93,9 @@ public class XDRRequestValidator extends XDRValidator {
 								"XDR Message Checklist", "RegistryRequestType",
 								MessageType.Info);
 					// Test Id: 9
+					//rim:RegistryObjectList
+					//"Verify: Using the XDS Metadata Checklist, verify all child elements in the RegistryObjectList. If there is no higher context, use context PRDS: Provide and Register Document Set-b.
+					//Description: The collection of objects and relationships that are being submitted to the registry."
 					iter = child.getChildrenWithLocalName("RegistryObjectList");
 					if (!iter.hasNext())
 						errorRecorder.record("XDR_MSG_9",
@@ -169,14 +180,14 @@ public class XDRRequestValidator extends XDRValidator {
 					if (!Base64.isBase64(docValue))
 						errorRecorder.record("XDR_MSG_10_1",
 								"XDR Message Checklist", "Document",
-								MessageType.Info);
+								MessageType.Error);
 				} else {
 					Iterator xopElements = docElement
 							.getChildrenWithLocalName("include");
 					if (!xopElements.hasNext()) {
 						errorRecorder.record("XDR_MSG_10_1",
 								"XDR Message Checklist", "Document",
-								MessageType.Info);
+								MessageType.Error);
 					} else {
 						OMElement xopElement = (OMElement) xopElements.next();
 						verifyMimePart(xopElement, errorRecorder);

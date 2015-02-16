@@ -13,10 +13,10 @@ public final class XDRMessages {
 	
 	private XDRMessages()
 	{
-		loadProperties(textProps, "gov/onc/xdrtest/resource/XDRRecorderTextMessages.properties");
-		loadProperties(specProps, "gov/onc/xdrtest/resource/XDRRecorderMessageSpecs.properties");
-		loadProperties(refProps, "gov/onc/xdrtest/resource/XDRRecorderMessageReferences.properties");
-		loadProperties(messageTypes, "gov/onc/xdrtest/resource/XDRValidationTypes.properties");
+		loadProperties(textProps, "gov/onc/xdrtesttool/resource/XDRRecorderTextMessages.properties");
+		loadProperties(specProps, "gov/onc/xdrtesttool/resource/XDRRecorderMessageSpecs.properties");
+		loadProperties(refProps, "gov/onc/xdrtesttool/resource/XDRRecorderMessageReferences.properties");
+		loadProperties(messageTypes, "gov/onc/xdrtesttool/resource/XDRValidationTypes.properties");
 	}
 	
 	public String getErrorText(String eCode)

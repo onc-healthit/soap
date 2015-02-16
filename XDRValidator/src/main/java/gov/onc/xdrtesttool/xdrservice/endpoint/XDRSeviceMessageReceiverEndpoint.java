@@ -68,7 +68,7 @@ public class XDRSeviceMessageReceiverEndpoint {
 	Source handleProvideAndRegisterDocumentSetRequest(
 			@RequestPayload Source source, MessageContext messageContext)
 			throws Exception {
-		log.info("Inside ****** handleProvideAndRegisterDocumentSetRequest *****");
+		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****");
 
 		String xmlFile = xmlToString(source);
 
@@ -81,7 +81,7 @@ public class XDRSeviceMessageReceiverEndpoint {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		InputSource is = new InputSource(new StringReader(xmlFile));
 		Document doc = builder.parse(is);
-
+		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest ****2*");
 		NodeList nodeList = doc.getElementsByTagName("rim:Slot");
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -101,7 +101,7 @@ public class XDRSeviceMessageReceiverEndpoint {
 				}
 			}
 		}
-
+		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****3");
 		XDRMessageRecorder errorRecorder = new XDRMessageRecorder();
 		//ValidationUtil.validateSchema(soapMessage, errorRecorder);
 
@@ -112,6 +112,7 @@ public class XDRSeviceMessageReceiverEndpoint {
 			}
 		}
 		MessageReader reader = new MessageReader(errorRecorder);
+		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****4");
 		return reader.buildResponse();
 
 	}

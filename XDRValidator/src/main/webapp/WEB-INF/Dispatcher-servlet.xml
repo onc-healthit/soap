@@ -43,7 +43,7 @@
 	  	<bean class=" gov.onc.xdrtesttool.validate.EbRimValidator"/>
 		<bean class=" gov.onc.xdrtesttool.validate.XDRRequestValidator"/>
 	  	<bean class=" gov.onc.xdrtesttool.validate.XDSDocumentEntryValidator"/>
-	  	<bean class=" gov.onc.xdrtesttool.validate.XDSAssosiationValidator"/>
+	  	<bean class=" gov.onc.xdrtesttool.validate.XDSAssociationValidator"/>
 	  	<bean class=" gov.onc.xdrtesttool.validate.XDSSubmissionSetValidator"/>
 	  	<bean class=" gov.onc.xdrtesttool.validate.XDSFolderValidator"/>
 	  	<bean class=" gov.onc.xdrtesttool.validate.MtomXopValidator"/>

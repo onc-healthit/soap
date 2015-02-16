@@ -63,9 +63,11 @@ public class XDSSubmissionSetValidator extends XDRValidator {
 		OMElement classificationElement = ValidationUtil.findClassificationChildElement(
 				registryObjectElement,
 				"urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd");
+		
 		while (registryPackageIter.hasNext()) {
 			OMElement registryPackageElement = (OMElement) registryPackageIter
 					.next();
+			
 			if(registryPackageIter.hasNext())
 				errorRecorder.record("XDS_MSG_181_1",
 						Constants.XDS_Metadata_Checklist,

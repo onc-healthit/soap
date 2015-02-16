@@ -440,7 +440,7 @@ public class ValidationUtil {
 	public static void validateSchema(SoapMessage soapMsg, MessageRecorder errorRecorder)
 	{
 		Source source = soapMsg.getPayloadSource();
-		validateXML("gov/onc/xdrtest/schema/IHE/XDS.b_DocumentRepository.xsd", source, errorRecorder);
+		validateXML("gov/onc/xdrtesttool/schema/IHE/XDS.b_DocumentRepository.xsd", source, errorRecorder);
 	}
 	
 	public static void validateNamespaces(OMElement element, MessageRecorder errorRecorder)
@@ -485,4 +485,21 @@ public class ValidationUtil {
 		return true;
 	}
 	
+	public static boolean isValidXTN(String xtnValue)
+	{
+		if(xtnValue == null || xtnValue.length() == 0)
+			return false;
+		
+		int index = xtnValue.indexOf("^^Internet^");
+		if(index < 0)
+			return false;
+		
+		String email = xtnValue.substring(index + 11);
+		if(email == null || email.length() == 0)
+			return false;
+		
+		if(email.lastIndexOf("^") > 0)
+			email = email.substring(0, email.lastIndexOf("^"));
+		return org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(email);
+	}
 }

@@ -213,4 +213,40 @@ public class XDSSubmissionSetClassificationValidator {
 						"XDSSubmissionSet.Classification.authorSpecialty", MessageType.Error);
 		}
 	}
+	
+	private void validateXTN(OMElement classElement)
+	{
+		//rim:Slot WHERE @name="authorTelecommunication"
+		//"Verify:
+		//- Value is in the HL7 V2 XTN format: ""^^Internet^"" direct-address
+		//- As with any HL7 datatype, the XTN value may have trailing delimiters (""^"" characters).
+		//- The value of the email address MUST = the value in the RFC 5322 ""from"" header.
+		//Description: XDSSubmissionSet.authorTelecommunication metadata attribute.
+		//Example: ^^Internet^drwel@direct.example.org"
+		OMElement slot = ValidationUtil.findSlot(classElement, "authorTelecommunication");
+		if(slot == null)
+			errorRecorder.record("XDR_MSG_433", "XDSSubmissionSet",
+					"XDSSubmissionSet", MessageType.Error);			
+		else
+		{
+			List valueList = ValidationUtil.getSlotValueList(slot);
+			if(valueList == null || valueList.size() == 0)
+				errorRecorder.record("XDR_MSG_433", "XDSSubmissionSet",
+						"XDSSubmissionSet", MessageType.Error);			
+			else
+			{
+				Iterator valueIter = valueList.iterator();
+				while(valueIter.hasNext())
+				{
+					String value = (String) valueIter.next();
+					if(!ValidationUtil.isValidXTN(value))
+						errorRecorder.record("XDR_MSG_433", "XDSSubmissionSet",
+								"XDSSubmissionSet", MessageType.Error);			
+						
+				}
+			}
+				
+		}
+	}
+	
 }

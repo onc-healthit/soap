@@ -56,20 +56,20 @@ public class NamespaceManager {
 	}
 
 	private void loadNamespaceElementsFromSchema() throws XSDParserException{
-		NS_S_List.addAll(load("gov/onc/xdrtest/schema/ws-soap.xsd"));
-		NS_WSA_List.addAll(load("gov/onc/xdrtest/schema/ws-addr.xsd"));
+		NS_S_List.addAll(load("gov/onc/xdrtesttool/schema/ws-soap.xsd"));
+		NS_WSA_List.addAll(load("gov/onc/xdrtesttool/schema/ws-addr.xsd"));
 		NS_DIRECT_List.add("addressBlock");
 		NS_DIRECT_List.add("metadata-level");
 		NS_DIRECT_List.add("from");
 		NS_DIRECT_List.add("to");
 		NS_XDSB_List
-				.addAll(load("gov/onc/xdrtest/schema/IHE/XDS.b_DocumentRepository.xsd"));
+				.addAll(load("gov/onc/xdrtesttool/schema/IHE/XDS.b_DocumentRepository.xsd"));
 		NS_XOP_List.add("Include");
-		NS_RIM_List.addAll(load("gov/onc/xdrtest/schema/ebRS/rim.xsd"));
-		NS_LCM_List.addAll(load("gov/onc/xdrtest/schema/ebRS/lcm.xsd"));
-		NS_RS_List.addAll(load("gov/onc/xdrtest/schema/ebRS/rs.xsd"));
-		NS_QUERY_List.addAll(load("gov/onc/xdrtest/schema/ebRS/query.xsd"));
-		NS_CMS_List.addAll(load("gov/onc/xdrtest/schema/ebRS/cms.xsd"));
+		NS_RIM_List.addAll(load("gov/onc/xdrtesttool/schema/ebRS/rim.xsd"));
+		NS_LCM_List.addAll(load("gov/onc/xdrtesttool/schema/ebRS/lcm.xsd"));
+		NS_RS_List.addAll(load("gov/onc/xdrtesttool/schema/ebRS/rs.xsd"));
+		NS_QUERY_List.addAll(load("gov/onc/xdrtesttool/schema/ebRS/query.xsd"));
+		NS_CMS_List.addAll(load("gov/onc/xdrtesttool/schema/ebRS/cms.xsd"));
 	}
 
 	private  List<String> load(String xsdFile) throws XSDParserException{

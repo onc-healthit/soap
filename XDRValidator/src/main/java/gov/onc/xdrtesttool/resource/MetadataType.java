@@ -22,11 +22,12 @@ public class MetadataType {
 	
 	private MetadataType()
 	{
-		loadMetadaTypes("gov/onc/xdrtest/resource/XDSMetadataTypesValidationLevel.properties");
+		loadMetadaTypes("gov/onc/xdrtesttool/resource/XDSMetadataTypesValidationLevel.properties");
 	}
 	
 	private void loadMetadaTypes(String fileName)
 	{
+		//System.out.println("Loading metadata types......"+fileName);
 		Properties props = loadProperties(fileName);
 		if(props != null)
 		{
@@ -75,11 +76,12 @@ public class MetadataType {
 				}
 			}
 		}
-		System.out.println(metadataTypesMap);
+		//System.out.println("Loading metadata types......"+metadataTypesMap);
 	}
 	
 	private Properties loadProperties(String fileName)
 	{
+		//System.out.println("Loading properties......"+fileName);
     	InputStream input = null;
     	Properties props = null;
     	try {
@@ -102,6 +104,7 @@ public class MetadataType {
 			}
         	}
         }
+    	//System.out.println("Loading properties......"+props);
     	return props;
 	}
 	
