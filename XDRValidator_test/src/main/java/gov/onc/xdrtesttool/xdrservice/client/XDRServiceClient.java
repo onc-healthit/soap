@@ -68,8 +68,8 @@ public class XDRServiceClient {
         	    	//<a:Action s:mustUnderstand=\"1\">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b</a:Action>
         	        QName actionQ = new QName("http://www.w3.org/2005/08/addressing", "Action", "a");
         	        SOAPHeaderElement actionElement = header.addHeaderElement(actionQ);
-        	        QName mustUnderstand = new QName("http://www.w3.org/2003/05/soap-envelope", "mustUnderstand", "s");
-        	        actionElement.addAttribute(mustUnderstand, "1");
+        	       // QName mustUnderstand = new QName("http://www.w3.org/2003/05/soap-envelope", "mustUnderstand", "s");
+        	       // actionElement.addAttribute(mustUnderstand, "1");
         	        actionElement.setValue("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b");
         	        
         	        //"<a:MessageID>urn:uuid:6d296e90-e5dc-43d0-b455-7c1f3eb35d83</a:MessageID>"
@@ -90,7 +90,7 @@ public class XDRServiceClient {
         	        QName toQ = new QName("http://www.w3.org/2005/08/addressing", "Address", "a");
         	        SOAPElement toElement;
 						toElement = header.addHeaderElement(toQ);
-        	        toElement.addAttribute(mustUnderstand, "1");
+        	        //toElement.addAttribute(mustUnderstand, "1");
         	        addressElement.setValue("http://localhost:2647/XdsService/IHEXDSRepository.svc");
 
         	        QName directAddr = new QName("urn:direct:addressing", "addressBlock", "direct");

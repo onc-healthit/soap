@@ -3,24 +3,29 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:sws="http://www.springframework.org/schema/web-services"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/web-services
-       http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
+       http://www.springframework.org/schema/web-services/web-services-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
        
     <sws:annotation-driven/>
 
     <bean class="org.springframework.ws.transport.http.WebServiceMessageReceiverHandlerAdapter">
     	<property name="messageFactory">
-    		<bean class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"></bean>
-    	</property>
-<!--
-    	<property name="messageFactory">
-    		<bean class="gov.onc.xdrtesttool.xml.XdrSoapMessageFactory"></bean>
-    	</property>
--->
+		<ref bean="messageFactory"/>
+	</property>
     </bean>
        
+       
+      <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
+		<description>A message factory to support SOAP 1.2</description>
+        <property name="soapVersion">
+            <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_12"/>
+        </property>
+	</bean>
+	
    	<bean class="org.springframework.ws.server.endpoint.mapping.SimpleMethodEndpointMapping">
 		<property name="endpoints">
 			<ref bean="XDRServiceEndpoint"/>
