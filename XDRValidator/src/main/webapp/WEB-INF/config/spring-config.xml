@@ -37,6 +37,7 @@
 	<bean class="org.springframework.ws.transport.http.WebServiceMessageReceiverHandlerAdapter">
     	<property name="messageFactory">
     		<bean class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"></bean>
+    		<!-- <bean class="gov.onc.xdrtesttool.xml.XdrSoapMessageFactory"></bean> -->
     	</property>
     </bean>
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

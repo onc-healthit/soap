@@ -10,11 +10,11 @@
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<bean id="messageFactory12" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" autowire-candidate="false">
-<!--  
+  
         <property name="soapVersion">
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_12"/>
         </property>
--->        
+ 
     </bean>
    
 	<bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate" autowire="byType" autowire-candidate="false">

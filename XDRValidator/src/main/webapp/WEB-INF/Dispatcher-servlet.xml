@@ -9,11 +9,16 @@
        http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
        
     <sws:annotation-driven/>
-    
+
     <bean class="org.springframework.ws.transport.http.WebServiceMessageReceiverHandlerAdapter">
     	<property name="messageFactory">
     		<bean class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"></bean>
     	</property>
+<!--
+    	<property name="messageFactory">
+    		<bean class="gov.onc.xdrtesttool.xml.XdrSoapMessageFactory"></bean>
+    	</property>
+-->
     </bean>
        
    	<bean class="org.springframework.ws.server.endpoint.mapping.SimpleMethodEndpointMapping">

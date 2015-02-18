@@ -46,7 +46,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.springframework.xml.transform.StringSource;
+import javax.xml.ws.soap.SOAPBinding;
 
+@Endpoint(value = SOAPBinding.SOAP12HTTP_BINDING)
 public class XDRSeviceMessageReceiverEndpoint {
 	private final Logger log = Logger.getLogger(this.getClass().toString());
 	private static final String NAMESPACE_RIM_URI = "urn:ihe:iti:xds-b:2007";

@@ -9,8 +9,10 @@
       http://www.springframework.org/schema/web-services/web-services-2.0.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<bean id="messageFactory12" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" autowire-candidate="false">
+	<bean id="messageFactory12" class="gov.onc.xdrtesttool.xml.XdrSoapMessageFactory" autowire-candidate="false">
 <!--  
+	<bean id="messageFactory12" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" autowire-candidate="false">
+
         <property name="soapVersion">
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_12"/>
         </property>
