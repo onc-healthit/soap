@@ -38,6 +38,7 @@
  				<property name="logRequest" value="true"/>
   				<property name="logResponse" value="true" />
    			</bean>
+   			<bean class="gov.onc.xdrtesttool.xml.XdrMustUnderstandInterceptor"/>
  		</list>
  		
 		</property>

@@ -46,15 +46,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.springframework.xml.transform.StringSource;
+
+import javax.xml.ws.soap.Addressing;
 import javax.xml.ws.soap.SOAPBinding;
 
 @Endpoint(value = SOAPBinding.SOAP12HTTP_BINDING)
+@Addressing(enabled=true, required=true)
 public class XDRSeviceMessageReceiverEndpoint {
 	private final Logger log = Logger.getLogger(this.getClass().toString());
 	private static final String NAMESPACE_RIM_URI = "urn:ihe:iti:xds-b:2007";
 
 	public List<XDRValidator> validators = new ArrayList<XDRValidator>();
 
+	private Source response; 
 	public XDRSeviceMessageReceiverEndpoint() {
 	}
 
@@ -70,12 +74,11 @@ public class XDRSeviceMessageReceiverEndpoint {
 	Source handleProvideAndRegisterDocumentSetRequest(
 			@RequestPayload Source source, MessageContext messageContext)
 			throws Exception {
-		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****");
 
 		String xmlFile = xmlToString(source);
 
-		// log.info("Inside method, handleProvideAndRegisterDocumentSetRequest - message content = "+
-		// xmlFile);
+		log.info("Request message content = "+
+		xmlFile);
 
 		SoapMessage soapMessage = (SoapMessage) messageContext.getRequest();
 
@@ -83,7 +86,6 @@ public class XDRSeviceMessageReceiverEndpoint {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		InputSource is = new InputSource(new StringReader(xmlFile));
 		Document doc = builder.parse(is);
-		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest ****2*");
 		NodeList nodeList = doc.getElementsByTagName("rim:Slot");
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -103,7 +105,6 @@ public class XDRSeviceMessageReceiverEndpoint {
 				}
 			}
 		}
-		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****3");
 		XDRMessageRecorder errorRecorder = new XDRMessageRecorder();
 		//ValidationUtil.validateSchema(soapMessage, errorRecorder);
 
@@ -114,11 +115,18 @@ public class XDRSeviceMessageReceiverEndpoint {
 			}
 		}
 		MessageReader reader = new MessageReader(errorRecorder);
-		System.out.println("Inside ****** handleProvideAndRegisterDocumentSetRequest *****4");
-		return reader.buildResponse();
+		StringSource responseSource = reader.buildResponse();
+		log.info("Response message content = " + responseSource.toString());
+		response = responseSource;
+		return responseSource;
 
 	}
 
+	public Source getResponse()
+	{
+		return response;
+	}
+	
 
 	private String xmlToString(Source source) {
 		try {
