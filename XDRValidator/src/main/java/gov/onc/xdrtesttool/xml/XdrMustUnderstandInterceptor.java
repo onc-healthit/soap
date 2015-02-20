@@ -1,8 +1,12 @@
 package gov.onc.xdrtesttool.xml;
 
+import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
+
 import java.net.InetSocketAddress;
+import java.util.Iterator;
 import java.util.UUID;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -11,9 +15,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.log4j.Logger;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.context.MessageContext;
+import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapHeaderElement;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.server.SoapEndpointInterceptor;
@@ -23,6 +30,7 @@ import org.springframework.ws.transport.http.HttpServletConnection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.UriBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,6 +58,10 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		SoapMessage soapMessage = (SoapMessage) messageContext.getRequest();
 		OutputStream os = null;
 		PrintStream printStream = null;
+		String fromAddr = getFromAddress(soapMessage);
+		if(fromAddr == null)
+			fromAddr = ipAddress;
+		
 		try
 		{
 			UUID idOne = UUID.randomUUID();
@@ -60,7 +72,14 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 			WebServiceMessage message = messageContext.getRequest();
 			Source source = message.getPayloadSource();
 			String xmlFile = xmlToString(source);
-			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + ipAddress);
+			if(fromAddr.indexOf("@") != 0)
+			{
+				
+				String userId = fromAddr.substring(0, fromAddr.indexOf("@"));
+				String domainName = fromAddr.substring(fromAddr.indexOf("@")+1, fromAddr.length());
+				fromAddr = domainName + File.separatorChar + userId;
+			}
+			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr);
 			if (!logDir.exists()) logDir.mkdirs();
 			os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
 		            + idOne+".xml");
@@ -83,6 +102,70 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		return true;
 	}
 
+	private String getFromAddress(SoapMessage soapMessage)
+	{
+		try {
+			OMElement element = XMLParser.parseXMLSource(XMLParser
+					.getEnvelopeAsInputStream(soapMessage));
+			OMElement header = null;
+			Iterator headerIter = element.getChildrenWithLocalName("Header");
+			if (!headerIter.hasNext()) {
+				log.error("Header is missing from the request");
+				return null;
+			} else
+				header = (OMElement) headerIter.next();
+			
+			if(header == null)
+			{
+				log.error("Header is missing from the request");
+				return null;
+			}
+			else
+			{
+				Iterator addressIter = header.getChildrenWithLocalName("addressBlock");
+				if(!addressIter.hasNext())
+				{
+					log.error("Address is missing from the Header");
+					return null;
+				}
+				else
+				{
+					//S:Envelope/S:Header/direct:AddressBlock - Optional 
+					OMElement addressElement = (OMElement)addressIter.next();
+
+					Iterator fromIter = addressElement.getChildrenWithLocalName("from");
+					if(!fromIter.hasNext())
+					{
+						log.error("Address from is missing from the Header");
+						return null;
+					}
+					else
+					{
+						OMElement fromElement = (OMElement) fromIter.next();
+						String fromAddr = null;
+						try
+						{
+							UriBuilder.fromUri(fromElement.getText());
+							fromAddr = fromElement.getText();
+						}
+						catch(IllegalArgumentException e)
+						{
+							log.error("Invalid from Address in the Header");
+							return null;
+						}
+						return fromAddr;
+					}
+
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			log.error("Failed to get from address from SOAP Header");
+		}
+		return null;
+	}
 	private String xmlToString(Source source) {
 		try {
 			StringWriter stringWriter = new StringWriter();
