@@ -72,13 +72,16 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 			WebServiceMessage message = messageContext.getRequest();
 			Source source = message.getPayloadSource();
 			String xmlFile = xmlToString(source);
-			if(fromAddr.indexOf("@") != 0)
+			if(fromAddr.indexOf("@") != -1)
 			{
 				
 				String userId = fromAddr.substring(0, fromAddr.indexOf("@"));
 				String domainName = fromAddr.substring(fromAddr.indexOf("@")+1, fromAddr.length());
 				fromAddr = domainName + File.separatorChar + userId;
 			}
+			else
+				fromAddr = ipAdress;
+				
 			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr);
 			if (!logDir.exists()) logDir.mkdirs();
 			os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
