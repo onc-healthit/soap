@@ -88,7 +88,7 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 			else
 				fromAddr = ipAddress;
 				
-			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr);
+			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr.toUpperCase());
 			if (!logDir.exists()) logDir.mkdirs();
 			os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
 		            + "Request_"+formattedDate+".xml");
