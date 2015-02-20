@@ -38,6 +38,8 @@ import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 	private final Logger log = Logger.getLogger(this.getClass().toString());
@@ -65,6 +67,10 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		try
 		{
 			UUID idOne = UUID.randomUUID();
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddhhmmss.S");
+			String formattedDate = sdf.format(date);
+			
 			String outputDir = System.getProperty("xdrvalidator.log.dir");
 			if(outputDir == null)
 				outputDir = System.getProperty("java.io.tmpdir");
@@ -80,12 +86,12 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 				fromAddr = domainName + File.separatorChar + userId;
 			}
 			else
-				fromAddr = ipAdress;
+				fromAddr = ipAddress;
 				
 			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr);
 			if (!logDir.exists()) logDir.mkdirs();
 			os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
-		            + idOne+".xml");
+		            + "Request_"+formattedDate+".xml");
 			printStream = new PrintStream(os);
 		    soapMessage.writeTo(printStream);
 		    os.flush();
