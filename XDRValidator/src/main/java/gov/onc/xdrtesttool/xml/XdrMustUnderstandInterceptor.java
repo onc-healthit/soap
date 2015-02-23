@@ -63,31 +63,31 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		String fromAddr = getFromAddress(soapMessage);
 		if(fromAddr == null)
 			fromAddr = ipAddress;
-		
+
 		try
 		{
 			UUID idOne = UUID.randomUUID();
 			Date date = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddhhmmss.S");
+			SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddHHmmss.S");
 			String formattedDate = sdf.format(date);
-			
+
 			String outputDir = System.getProperty("xdrvalidator.log.dir");
 			if(outputDir == null)
 				outputDir = System.getProperty("java.io.tmpdir");
-	
+
 			WebServiceMessage message = messageContext.getRequest();
 			Source source = message.getPayloadSource();
 			String xmlFile = xmlToString(source);
 			if(fromAddr.indexOf("@") != -1)
 			{
-				
+
 				String userId = fromAddr.substring(0, fromAddr.indexOf("@"));
 				String domainName = fromAddr.substring(fromAddr.indexOf("@")+1, fromAddr.length());
 				fromAddr = domainName + File.separatorChar + userId;
 			}
 			else
 				fromAddr = ipAddress;
-				
+
 			File logDir = new File(outputDir + File.separatorChar + "xdrvalidator" + File.separatorChar + fromAddr.toUpperCase());
 			if (!logDir.exists()) logDir.mkdirs();
 			os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
@@ -123,7 +123,7 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 				return null;
 			} else
 				header = (OMElement) headerIter.next();
-			
+
 			if(header == null)
 			{
 				log.error("Header is missing from the request");
@@ -139,7 +139,7 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 				}
 				else
 				{
-					//S:Envelope/S:Header/direct:AddressBlock - Optional 
+					//S:Envelope/S:Header/direct:AddressBlock - Optional
 					OMElement addressElement = (OMElement)addressIter.next();
 
 					Iterator fromIter = addressElement.getChildrenWithLocalName("from");
@@ -191,7 +191,7 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		return null;
 	}
 
-	
+
 	@Override
 	public boolean handleResponse(MessageContext messageContext, Object endpoint)
 			throws Exception {
@@ -205,5 +205,5 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 		// TODO Auto-generated method stub
 		return true;
 	}
- 
+
 }
