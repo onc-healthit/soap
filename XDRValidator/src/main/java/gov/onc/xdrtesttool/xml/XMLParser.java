@@ -7,9 +7,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -66,14 +69,21 @@ public class XMLParser {
 		return documentElement;
 	}
 
-	static public OMElement parseXMLSource(InputStream stream) throws XMLParserException {
+	static public OMElement parseXMLSource(InputStream stream){
 		XMLStreamReader parser=null;
 
+		try{
 		OMElement documentElement = OMXMLBuilderFactory.createOMBuilder(stream).getDocumentElement();
 		//parser = XMLInputFactory.newInstance().createXMLStreamReader(source);
 		//StAXOMBuilder builder = new StAXOMBuilder(parser);
 		//OMElement documentElement =  builder.getDocumentElement();
 		return documentElement;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	
@@ -81,6 +91,16 @@ public class XMLParser {
 	{
 		OutputStream output = new ByteArrayOutputStream();
 		soapMsg.writeTo(output);
+		String outputDir = System.getProperty("java.io.tmpdir");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddHHmmss.S");
+		String formattedDate = sdf.format(date);
+
+		System.out.println("outputDir " + outputDir);
+		File file = new File(outputDir + File.separatorChar + "temp_"+formattedDate+".xml");
+		OutputStream  ofile = new FileOutputStream(file);
+		soapMsg.writeTo(ofile);
+
 		InputStream input = new ByteArrayInputStream(((ByteArrayOutputStream) output).toByteArray());
 		return input;
 	}

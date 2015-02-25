@@ -23,10 +23,10 @@ public class NamespaceValidator extends XDRValidator{
 						.getEnvelopeAsInputStream(soapMsg));
 			setMetadataType(element);
 			ValidationUtil.validateNamespaces(element, errorRecorder);
-		} catch (XMLParserException e) {
+		} catch (IOException e) {
 			errorRecorder.record("INVALID_NS", soapMsg.toString(), soapMsg.toString(), MessageType.Error);
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			errorRecorder.record("INVALID_NS", soapMsg.toString(), soapMsg.toString(), MessageType.Error);
 			e.printStackTrace();
 		}
