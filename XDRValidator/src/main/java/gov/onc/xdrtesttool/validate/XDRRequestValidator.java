@@ -124,6 +124,12 @@ public class XDRRequestValidator extends XDRValidator {
 	//- There may be other instances of this element with different @role values, but this checklist does not address them.
 	private void validateSOAPHeader(SoapMessage soapMsg) {
 		SoapHeader header = soapMsg.getEnvelope().getHeader();
+		if(header == null)
+		{
+			errorRecorder.record("XDR_MSG_412", "Direct XDR Checklist",
+					"S:Envelope", MessageType.Error);
+			return;
+		}
 		Iterator<SoapHeaderElement> iter = header.examineAllHeaderElements();
 		boolean found = false;
 		if (iter.hasNext()) {
