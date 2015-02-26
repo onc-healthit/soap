@@ -22,6 +22,12 @@ public class SOAPDirectHeaderValidator extends XDRValidator{
 		try {
 			OMElement element = XMLParser.parseXMLSource(XMLParser
 					.getEnvelopeAsInputStream(soapMsg));
+			if(element == null)
+			{
+				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
+			}
 			OMElement header = null;
 			Iterator headerIter = element.getChildrenWithLocalName("Header");
 			if (!headerIter.hasNext()) {

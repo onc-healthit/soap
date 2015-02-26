@@ -22,6 +22,12 @@ public class SOAPGeneralValidator extends XDRValidator {
 
 		try {
 			OMElement element = XMLParser.parseXMLSource(XMLParser.getEnvelopeAsInputStream(soapMsg));
+			if(element == null)
+			{
+				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
+			}
 			Iterator iter = element.getChildElements();
 			OMElement header = null;
 			OMElement body = null;

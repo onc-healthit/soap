@@ -21,6 +21,13 @@ public class NamespaceValidator extends XDRValidator{
 		try {
 				element = XMLParser.parseXMLSource(XMLParser
 						.getEnvelopeAsInputStream(soapMsg));
+				if(element == null)
+				{
+					errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+							"S:Envelope", MessageType.Error);
+					return;
+				}
+				
 			setMetadataType(element);
 			ValidationUtil.validateNamespaces(element, errorRecorder);
 		} catch (IOException e) {

@@ -28,6 +28,13 @@ public class EbRimValidator extends XDRValidator {
 		OMElement element;
 		try {
 			element = XMLParser.parseXMLSource(soapMsg.getPayloadSource());
+			if(element == null)
+			{
+				errorRecorder.record("XDS_MSG_100",
+						Constants.XDS_Metadata_Checklist,
+						"ebRIM", MetadataType.instance.getMessageType(metadataType, "100"));
+				return;
+			}
 			Iterator submitObjectsRequestIter = element
 					.getChildrenWithLocalName("SubmitObjectsRequest");
 			while (submitObjectsRequestIter.hasNext()) {

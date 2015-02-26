@@ -23,6 +23,7 @@ import javax.xml.transform.Source;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.soap.SOAPModelBuilder;
 import org.springframework.ws.soap.SoapMessage;
 
 public class XMLParser {
@@ -73,7 +74,9 @@ public class XMLParser {
 		XMLStreamReader parser=null;
 
 		try{
-		OMElement documentElement = OMXMLBuilderFactory.createOMBuilder(stream).getDocumentElement();
+		//OMElement documentElement = OMXMLBuilderFactory.createOMBuilder(stream).getDocumentElement();
+		SOAPModelBuilder builder = OMXMLBuilderFactory.createSOAPModelBuilder(stream, "UTF-8");
+		OMElement documentElement = builder.getDocumentElement();
 		//parser = XMLInputFactory.newInstance().createXMLStreamReader(source);
 		//StAXOMBuilder builder = new StAXOMBuilder(parser);
 		//OMElement documentElement =  builder.getDocumentElement();
@@ -91,6 +94,7 @@ public class XMLParser {
 	{
 		OutputStream output = new ByteArrayOutputStream();
 		soapMsg.writeTo(output);
+/*
 		String outputDir = System.getProperty("java.io.tmpdir");
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMddHHmmss.S");
@@ -100,7 +104,8 @@ public class XMLParser {
 		File file = new File(outputDir + File.separatorChar + "temp_"+formattedDate+".xml");
 		OutputStream  ofile = new FileOutputStream(file);
 		soapMsg.writeTo(ofile);
-
+		ofile.close();
+*/	
 		InputStream input = new ByteArrayInputStream(((ByteArrayOutputStream) output).toByteArray());
 		return input;
 	}

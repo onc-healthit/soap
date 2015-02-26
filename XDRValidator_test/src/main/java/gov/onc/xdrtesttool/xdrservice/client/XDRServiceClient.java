@@ -51,7 +51,8 @@ public class XDRServiceClient {
         	    public void doWithMessage(WebServiceMessage message) throws IOException, TransformerException{
 					try {
         	    	SOAPMessage soapMessage = ((org.springframework.ws.soap.saaj.SaajSoapMessage)message).getSaajMessage();
-
+        	    	soapMessage.setProperty(SOAPMessage.WRITE_XML_DECLARATION, "true");
+        	    	soapMessage.setProperty(SOAPMessage.CHARACTER_SET_ENCODING, "utf-8");
         	    	SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
         	    	SOAPHeader header = soapMessage.getSOAPHeader();
         	    	//<a:Action s:mustUnderstand=\"1\">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b</a:Action>
@@ -121,6 +122,8 @@ public class XDRServiceClient {
         	    public void doWithMessage(WebServiceMessage message) throws IOException, TransformerException{
 					try {
         	    	SOAPMessage soapMessage = ((org.springframework.ws.soap.saaj.SaajSoapMessage)message).getSaajMessage();
+        	    	soapMessage.setProperty(SOAPMessage.WRITE_XML_DECLARATION, "true");
+        	    	soapMessage.setProperty(SOAPMessage.CHARACTER_SET_ENCODING, "utf-8");
 
         	    	SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
         	    	SOAPHeader header = soapMessage.getSOAPHeader();
