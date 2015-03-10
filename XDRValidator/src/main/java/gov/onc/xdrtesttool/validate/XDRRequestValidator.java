@@ -36,6 +36,13 @@ public class XDRRequestValidator extends XDRValidator {
 
 			OMElement element = XMLParser.parseXMLSource(soapMsg
 					.getPayloadSource());
+			if(element == null)
+			{
+				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
+			}
+			
 			// Element Namespace is already verified
 			//S:Envelope/S:Body/xdsb:ProvideAndRegisterDocumentSetRequest
 			//Verify:

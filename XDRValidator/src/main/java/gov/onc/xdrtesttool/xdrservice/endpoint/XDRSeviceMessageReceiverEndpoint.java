@@ -10,6 +10,12 @@ import gov.onc.xdrtesttool.validate.ValidationUtil;
 import gov.onc.xdrtesttool.validate.XDRValidator;
 import gov.onc.xdrtesttool.xml.XMLParser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -118,10 +124,50 @@ public class XDRSeviceMessageReceiverEndpoint {
 		StringSource responseSource = reader.buildResponse();
 		log.info("Response message content = " + responseSource.toString());
 		response = responseSource;
+		writeResponseToLog(messageContext, responseSource);
 		return responseSource;
 
 	}
 
+	private void writeResponseToLog(MessageContext messageContext, StringSource responseSource)
+	{
+		OutputStream os = null;
+		PrintStream printStream = null;
+		try {
+			String logOutputDir = (String)messageContext.getProperty("LOG_OUTPUT_DIR");
+			String outputId = (String)messageContext.getProperty("LOG_OUTPUT_NAME");
+			String  logFileName = "Response_"+ outputId + ".xml";
+			File logDir = new File(logOutputDir);
+			if (!logDir.exists()) logDir.mkdirs();
+				os = new FileOutputStream(logDir.getAbsolutePath() +File.separatorChar
+				        + logFileName);
+			printStream = new PrintStream(os);
+			printStream.print(responseSource);
+		    os.flush();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(os != null)
+			{
+				try {
+					os.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(printStream != null)
+				printStream.close();
+		}
+
+	}
+	
 	public Source getResponse()
 	{
 		return response;

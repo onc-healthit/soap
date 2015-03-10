@@ -26,6 +26,13 @@ public class XDSAssociationValidator extends XDRValidator{
 		OMElement element;
 		try {
 			element = XMLParser.parseXMLSource(soapMsg.getPayloadSource());
+			if(element == null)
+			{
+				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
+			}
+			
 			Iterator submitObjectsRequestIter = element
 					.getChildrenWithLocalName("SubmitObjectsRequest");
 			while (submitObjectsRequestIter.hasNext()) {
