@@ -5,10 +5,14 @@ import gov.onc.xdrtesttool.error.MessageRecorderItem;
 import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
 import gov.onc.xdrtesttool.exception.XSDParserException;
 import gov.onc.xdrtesttool.resource.ResourceManager;
+import gov.onc.xdrtesttool.resource.XDRMessages;
 import gov.onc.xdrtesttool.xml.NamespaceManager;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -184,6 +189,69 @@ public class ValidationUtil {
 		return null;
 	}	
 
+
+	public static boolean isValidHITSP_C80_20_Table2_144conceptCode(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_144conceptCodes();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isValidHITSP_C80_20_Table2_151conceptCode(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_151conceptCodes();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isValidHITSP_C80_20_Table2_153conceptCode(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_153conceptCodes();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isValidHITSP_C80_20_Table2_147conceptCode(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_147conceptCodes();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+	
+	public static boolean isValidHITSP_C80_20_Table2_147conceptName(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_147conceptNames();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isValidHITSP_C80_20_Table2_149conceptName(String code)
+	{
+		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_149conceptNames();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
+
+	public static boolean isValidSNOMEDCTConceptId(String code)
+	{
+		List<String> codes = ResourceManager.instance.getSNOMEDCTConceptIds();
+		if(codes != null && codes.contains(code))
+			return true;
+		else
+			return false;
+	}
 	
 	public static boolean isValidConceptCode(String code)
 	{
@@ -344,7 +412,7 @@ public class ValidationUtil {
 		else
 		{
 			OMElement nameElement = (OMElement) nameElementIter.next();
-			Iterator localIter = classElement.getChildrenWithLocalName("rim:LocalizedString");
+			Iterator localIter = classElement.getChildrenWithLocalName("LocalizedString");
 			if(!localIter.hasNext())
 				errorRecorder.record(errorCode, "XDS Metadata Checklist",
 						"XDSSubmissionSet."+elementName, MessageType.Error);
@@ -502,4 +570,44 @@ public class ValidationUtil {
 			email = email.substring(0, email.lastIndexOf("^"));
 		return org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(email);
 	}
+	
+	public static LinkedList<String> getListFromFile(String fileName) throws FileNotFoundException, IOException
+	{
+    	InputStream input = null;
+    	BufferedReader reader = null;
+    	LinkedList<String> list = new LinkedList();
+    	try {
+    		input = XDRMessages.class.getClassLoader().getResourceAsStream(fileName);
+    		if(input==null){
+    	            System.out.println("Failed to load message text properties "+ fileName +" from the classpath");
+    		    return null;
+    		}
+    		reader = new BufferedReader(new InputStreamReader(input));
+            String line = reader.readLine();
+            while(line != null){
+            	list.add(line);
+                line = reader.readLine();
+            }           
+ 
+        } catch (FileNotFoundException ex) {
+        	ex.printStackTrace();
+        	throw ex;
+        } catch (IOException ex) {
+    		ex.printStackTrace();
+    		throw ex;
+        } finally {
+            try {
+                if(reader != null)
+                	reader.close();
+                if(input != null)
+                	input.close();
+            } catch (IOException ex) {
+            	ex.printStackTrace();
+            	throw ex;
+            }
+        }
+
+    	return list;
+	}
+	
 }

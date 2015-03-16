@@ -90,13 +90,13 @@ public class ExtrinsicObjectClassificationValidator {
 			validateClassifiedObject(extrinsicObject, classElement7, "XDR_MSG_176", "Classification7");
 		}
 
-		OMElement classElement8 = ValidationUtil.findClassificationByScheme(extrinsicObject, "urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1");
+		OMElement classElement8 = ValidationUtil.findClassificationByScheme(extrinsicObject, "urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead");
 		if(classElement8 ==  null)
 			errorRecorder.record("XDR_MSG_177", "XDS Metadata Checklist",
 					"XDSDocumentEntry.Classification8", MetadataType.instance.getMessageType(metadataType, "177"));
 		else
 		{
-			verifyClassification8(extrinsicObject, classElement6);
+			verifyClassification8(extrinsicObject, classElement8);
 		}
 
 		OMElement classElement9 = ValidationUtil.findClassificationByScheme(extrinsicObject, "urn:uuid:f0306f51-975f-434e-a61c-c59651d33983");
@@ -105,7 +105,7 @@ public class ExtrinsicObjectClassificationValidator {
 					"XDSDocumentEntry.Classification9", MetadataType.instance.getMessageType(metadataType, "178"));
 		else
 		{
-			verifyClassification9(extrinsicObject, classElement6);
+			verifyClassification9(extrinsicObject, classElement9);
 		}
 		
 		ValidateExternalIdentifier1(extrinsicObject);
@@ -127,8 +127,8 @@ public class ExtrinsicObjectClassificationValidator {
 			else
 			{
 				String valueStr = attr.getAttributeValue();
-				int index1 = valueStr.indexOf("^^^&amp;");
-				int index2 = valueStr.indexOf("&amp;ISO");
+				int index1 = valueStr.indexOf("^^^&");
+				int index2 = valueStr.indexOf("&ISO");
 				if (index1 <= 0 || (index2 <= 0 || index2 <= index1))
 					errorRecorder.record("XDR_MSG_179_1",
 							"XDS Metadata Checklist",
@@ -161,6 +161,39 @@ public class ExtrinsicObjectClassificationValidator {
 		}
 	}
 	
+/*
+ "rim:Classification
+WHERE
+@classificationScheme= ""urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"""
+
+"Verify:
+- @classifiedObject = the value of rim:ExtrinsicObject/@id
+- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+- rim:Name/rim:LocalizedString/@value MUST be present
+- @nodeRepresentation is present
+- In the contexts of PRDS and PRDSML - Provide and Register Document Set, and DDSM - Distribute Document Set on Media:
+  - @nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-144, column ""Concept Code""
+  - rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns ""Concept Name"" and ""Description""
+  - The ""codingScheme"" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 2.16.840.1.113883.6.1
+
+Description: XDSDocumentEntry.classCode metadata attribute.
+
+Example:
+<rim:Classification id=""cl02""
+  classificationScheme=""urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a""
+  classifiedObject=""Document01""
+  nodeRepresentation=""34133-9"">
+  <rim:Slot name=""codingScheme"">
+    <rim:ValueList>
+      <rim:Value>2.16.840.1.113883.6.1</rim:Value>
+    </rim:ValueList>
+  </rim:Slot>
+  <rim:Name>
+    <rim:LocalizedString value=""Summarization of episode note""/>
+  </rim:Name>
+</rim:Classification>"
+	
+ */
 	private void verifyClassification2(OMElement extrinsicObject, OMElement classElement2)
 	{
 		//@classifiedObject = the value of rim:ExtrinsicObject/@id
@@ -182,7 +215,7 @@ public class ExtrinsicObjectClassificationValidator {
 					"XDSDocumentEntry.Classification2.nodeRepresentation", MessageType.Error);
 		else
 		{
-			if(!ValidationUtil.isValidConceptCode(attr.getAttributeValue()))
+			if(!ValidationUtil.isValidHITSP_C80_20_Table2_144conceptCode(attr.getAttributeValue()))
 				errorRecorder.record("XDR_MSG_171_4", "XDS Metadata Checklist",
 						"XDSDocumentEntry.Classification2.nodeRepresentation", MessageType.Warning);				
 		}
@@ -205,12 +238,42 @@ public class ExtrinsicObjectClassificationValidator {
 		//@nodeRepresentation is present
 		//@nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-144, column "Concept Code"
 		//- rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"
-		validateNodeRepresentation(classElement3, "XDR_MSG_172_4", "Classification3");
+		validateNodeRepresentationWithTable151(classElement3, "XDR_MSG_172_4", "Classification3");
 
 		//The "codingScheme" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 2.16.840.1.113883.5.25
 		validateCodingSchemeValue(classElement3, "XDR_MSG_172_5", "Classification3", "2.16.840.1.113883.5.25");
 	}
 
+	/*
+	"rim:Classification
+	WHERE
+	@classificationScheme= ""urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"""
+
+	"Verify:
+	- @classifiedObject = the value of rim:ExtrinsicObject/@id
+	- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+	- rim:Name/rim:LocalizedString/@value MUST be present
+	- @nodeRepresentation is present
+	- The values above are not constrained, even though Table 4.2-5 states it ""shall not conflict with the corresponding values inherent in the classCode, practiceSettingCode or typeCode of this XDSDocumentEntry, as such a conflict would create an ambiguous situation."", but the Spec Factory has decided not to constrain it at this level.  See linked implementation guidance.
+	
+	Description: XDSDocumentEntry.eventCodeList metadata attribute.
+	
+	Example:
+	<rim:Classification id=""cl02""
+	  classificationScheme=""urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4""
+	  classifiedObject=""Document01""
+	  nodeRepresentation=""some value"">
+	  <rim:Slot name=""codingScheme"">
+	    <rim:ValueList>
+	      <rim:Value>some scheme</rim:Value>
+	    </rim:ValueList>
+	  </rim:Slot>
+	  <rim:Name>
+	    <rim:LocalizedString value=""some value description""/>
+	  </rim:Name>
+	</rim:Classification>"
+	 
+	 */
 	private void verifyClassification4(OMElement extrinsicObject, OMElement classElement4)
 	{
 		//@classifiedObject = the value of rim:ExtrinsicObject/@id
@@ -229,6 +292,39 @@ public class ExtrinsicObjectClassificationValidator {
 			errorRecorder.record("XDR_MSG_173_4", "XDS Metadata Checklist",
 					"XDSDocumentEntry.Classification3.nodeRepresentation", MessageType.Error);
 	}
+	/*
+	"rim:Classification
+	WHERE
+	@classificationScheme= ""urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"""
+	 
+	"Verify: 
+	- @classifiedObject = the value of rim:ExtrinsicObject/@id
+	- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+	- rim:Name/rim:LocalizedString/@value MUST be present
+	- @nodeRepresentation is present
+	- In the contexts of PRDS and PRDSML - Provide and Register Document Set, and DDSM - Distribute Document Set on Media:
+	  - @nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-153, column ""Concept Code""
+	  - rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-153, column ""Concept Name""
+	  - The ""codingScheme"" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 1.3.6.1.4.1.19376.1.2.3 (except for concept code urn:nhin:names:acp:XACML)
+	
+	Description: XDSDocumentEntry.formatCode metadata attribute.
+	
+	Example: 
+	<rim:Classification id=""cl02""
+	  classificationScheme=""urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d""
+	  classifiedObject=""Document01""
+	  nodeRepresentation=""urn:ihe:pcc:xphr:2007"">
+	  <rim:Slot name=""codingScheme"">
+	    <rim:ValueList>
+	      <rim:Value>1.3.6.1.4.1.19376.1.2.3</rim:Value>
+	    </rim:ValueList>
+	  </rim:Slot>
+	  <rim:Name>
+	    <rim:LocalizedString value=""HL7 CCD Document""/>
+	  </rim:Name>
+	</rim:Classification>"
+	 
+	 */
 	
 	private void verifyClassification5(OMElement extrinsicObject, OMElement classElement5)
 	{
@@ -245,13 +341,46 @@ public class ExtrinsicObjectClassificationValidator {
 		//@nodeRepresentation is present
 		//@nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-144, column "Concept Code"
 		//- rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"
-		validateNodeRepresentation(classElement5, "XDR_MSG_174_4", "Classification5");
+		validateNodeRepresentationWithTable153(classElement5, "XDR_MSG_174_4", "Classification5");
 
 		//The "codingScheme" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 1.3.6.1.4.1.19376.1.2.3 
 		//(except for concept code urn:nhin:names:acp:XACML)
 		validateCodingSchemeValue(classElement5, "XDR_MSG_174_5", "Classification5", "1.3.6.1.4.1.19376.1.2.3");
 	}
 
+	/*
+	"rim:Classification
+	WHERE
+	@classificationScheme= ""urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"""
+
+	"Verify: 
+	- @classifiedObject = the value of rim:ExtrinsicObject/@id
+	- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+	- rim:Name/rim:LocalizedString/@value MUST be present
+	- @nodeRepresentation is present
+	- @nodeRepresentation MUST NOT conflict with the value inherent in the typeCode, as such a conflict would create an ambiguous situation (may not be verifiable)
+	- In the contexts of PRDS and PRDSML - Provide and Register Document Set, and DDSM - Distribute Document Set on Media:
+	  - @nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-147, column ""Concept Code""
+	  - rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-147, column ""Concept Name""
+	  - The ""codingScheme"" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 2.16.840.1.113883.6.96
+
+	Description: XDSDocumentEntry.healthcareFacilityTypeCode metadata attribute.
+
+	Example:
+	<rim:Classification id=""cl02""
+	  classificationScheme=""urn:uuid:f33fb8ac-18af-42cc-ae0eed0b0bdb91e1""
+	  classifiedObject=""Document01""
+	  nodeRepresentation=""73770003"">
+	  <rim:Slot name=""codingScheme"">
+	    <rim:ValueList>
+	      <rim:Value>2.16.840.1.113883.6.96</rim:Value>
+	    </rim:ValueList>
+	  </rim:Slot>
+	  <rim:Name>
+	    <rim:LocalizedString value=""Emergency department--hospital""/>
+	  </rim:Name>
+	</rim:Classification>"
+	*/
 	private void verifyClassification6(OMElement extrinsicObject, OMElement classElement6)
 	{
 		//@classifiedObject = the value of rim:ExtrinsicObject/@id
@@ -261,19 +390,54 @@ public class ExtrinsicObjectClassificationValidator {
 		validateCodingScheme(classElement6, "XDR_MSG_175_2", "Classification6");
 		
 		//rim:Name/rim:LocalizedString/@value MUST be present
+		//- rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"
 		validateLocalizedString(classElement6, "XDR_MSG_175_3", "Classification6");
 		
 		
 		//@nodeRepresentation is present
-		//@nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-144, column "Concept Code"
-		//- rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"
-		validateNodeRepresentation(classElement6, "XDR_MSG_175_4", "Classification6");
+		//nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-147, column "Concept Code"
+		validateNodeRepresentationWithTable147(classElement6, "XDR_MSG_175_4", "Classification6");
+
+		//rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-147, column "Concept Name"
+		validateLocalizedStringHITSPC80_20_Table147(classElement6, "XDR_MSG_175_5", "Classification6");
 
 		//The "codingScheme" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 2.16.840.1.113883.6.96 
 		//(except for concept code urn:nhin:names:acp:XACML)
-		validateCodingSchemeValue(classElement6, "XDR_MSG_175_5", "Classification6", "2.16.840.1.113883.6.96");
+		validateCodingSchemeValue(classElement6, "XDR_MSG_175_6", "Classification6", "2.16.840.1.113883.6.96");
 	}
 	
+/*
+  	"rim:Classification
+	WHERE
+	@classificationScheme= ""urn:uuid:cccf5598-8b07-4b77-a05eae952c785ead"""
+
+	"Verify: 
+	- @classifiedObject = the value of rim:ExtrinsicObject/@id
+	- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+	- rim:Name/rim:LocalizedString/@value MUST be present
+	- @nodeRepresentation is present
+	- In the contexts of PRDS and PRDSML - Provide and Register Document Set, and DDSM - Distribute Document Set on Media:
+	  - @nodeRepresentation value SHOULD come from the value set in HITSP C80 2.0: Table 2-149, column ""SNOMED CT ® Concept ID""
+	  - rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept ID in HITSP C80 2.0: Table 2-149, column ""Concept Name Specialty Area""
+	  - The ""codingScheme"" Slot rim:Slot/rim:ValueList/rim:Value SHOULD be 2.16.840.1.113883.6.96
+
+	Description: XDSDocumentEntry.practiceSettingCode metadata attribute.
+
+	Example: 
+	<rim:Classification id=""cl02""
+	  classificationScheme=""urn:uuid:cccf5598-8b07-4b77-a05eae952c785ead""
+	  classifiedObject=""Document01""
+	  nodeRepresentation=""394577000"">
+	  <rim:Slot name=""codingScheme"">
+	    <rim:ValueList>
+	      <rim:Value>2.16.840.1.113883.6.96</rim:Value>
+	    </rim:ValueList>
+	  </rim:Slot>
+	  <rim:Name>
+	    <rim:LocalizedString value=""Anesthetics""/>
+	  </rim:Name>
+	</rim:Classification>"
+*/
 	private void verifyClassification8(OMElement extrinsicObject, OMElement classElement)
 	{
 		//@classifiedObject = the value of rim:ExtrinsicObject/@id
@@ -284,7 +448,7 @@ public class ExtrinsicObjectClassificationValidator {
 		
 		//rim:Name/rim:LocalizedString/@value MUST be present
 		//rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept ID in HITSP C80 2.0: Table 2-149, column "Concept Name Specialty Area"
-		validateLocalizedStringValueWithConceptNameSpecialityArea(classElement, "XDR_MSG_177_3", "Classification8");
+		validateLocalizedStringHITSPC80_20_Table149(classElement, "XDR_MSG_177_3", "Classification8");
 		
 		
 		//@nodeRepresentation is present
@@ -306,7 +470,7 @@ public class ExtrinsicObjectClassificationValidator {
 		
 		//rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions
 		//for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"		
-		validateLocalizedString(classElement, "XDR_MSG_178_3", "Classification9");
+		//validateLocalizedStringHITSPC80_20(classElement, "XDR_MSG_178_3", "Classification9");
 		
 		
 		//@nodeRepresentation is present
@@ -319,7 +483,8 @@ public class ExtrinsicObjectClassificationValidator {
 		validateCodingSchemeValue(classElement, "XDR_MSG_178_5", "Classification9", "2.16.840.1.113883.6.1");
 	}	
 	
-	private void validateNodeRepresentation(OMElement classElement, String errorCode, String elementName)
+
+	private void validateNodeRepresentationHITSPC80_20(OMElement classElement, String errorCode, String elementName)
 	{
 		OMAttribute attr = classElement.getAttribute(new QName("nodeRepresentation"));
 		if(attr == null)
@@ -333,7 +498,68 @@ public class ExtrinsicObjectClassificationValidator {
 		}
 		
 	}
-	////@classifiedObject = the value of rim:ExtrinsicObject/@id
+
+	private void validateNodeRepresentation(OMElement classElement, String errorCode, String elementName)
+	{
+		OMAttribute attr = classElement.getAttribute(new QName("nodeRepresentation"));
+		if(attr == null)
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			if(!ValidationUtil.isValidHITSP_C80_20_Table2_147conceptCode(attr.getAttributeValue()))
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+		}
+		
+	}
+
+	private void validateNodeRepresentationWithTable151(OMElement classElement, String errorCode, String elementName)
+	{
+		OMAttribute attr = classElement.getAttribute(new QName("nodeRepresentation"));
+		if(attr == null)
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			if(!ValidationUtil.isValidHITSP_C80_20_Table2_151conceptCode(attr.getAttributeValue()))
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+		}
+		
+	}
+
+	private void validateNodeRepresentationWithTable147(OMElement classElement, String errorCode, String elementName)
+	{
+		OMAttribute attr = classElement.getAttribute(new QName("nodeRepresentation"));
+		if(attr == null)
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			if(!ValidationUtil.isValidHITSP_C80_20_Table2_147conceptCode(attr.getAttributeValue()))
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+		}
+		
+	}
+
+	private void validateNodeRepresentationWithTable153(OMElement classElement, String errorCode, String elementName)
+	{
+		OMAttribute attr = classElement.getAttribute(new QName("nodeRepresentation"));
+		if(attr == null)
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			if(!ValidationUtil.isValidHITSP_C80_20_Table2_153conceptCode(attr.getAttributeValue()))
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+		}
+		
+	}
+
+	//@classifiedObject = the value of rim:ExtrinsicObject/@id
 	private void validateClassifiedObject(OMElement extrinsicObject, OMElement classElement, String errorCode, String elementName)
 	{
 		OMAttribute attr1 = classElement.getAttribute(new QName("classifiedObject"));
@@ -366,6 +592,106 @@ public class ExtrinsicObjectClassificationValidator {
 		}
 	}
 
+	//rim:Name/rim:LocalizedString/@value SHOULD be consistent with the corresponding descriptions for the Concept Code in HITSP C80 2.0: Table 2-144, columns "Concept Name" and "Description"	
+	private void validateLocalizedStringHITSPC80_20(OMElement classElement, String errorCode, String elementName)
+	{
+		Iterator nameElementIter = classElement.getChildrenWithLocalName("Name");
+		if(!nameElementIter.hasNext())
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			OMElement nameElement = (OMElement) nameElementIter.next();
+			Iterator localIter = nameElement.getChildrenWithLocalName("LocalizedString");
+			if(!localIter.hasNext())
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+			else
+			{
+				OMElement valueElement = (OMElement)localIter.next();
+				OMAttribute attr = valueElement.getAttribute(new QName("value"));
+				if(attr == null || attr.getAttributeValue() == null)
+					errorRecorder.record(errorCode, "XDS Metadata Checklist",
+							"XDSDocumentEntry."+elementName, MessageType.Error);
+				else
+				{
+					if(!ValidationUtil.isValidHITSP_C80_20_Table2_144conceptCode(attr.getAttributeValue()))
+					{
+						errorRecorder.record(errorCode, "XDS Metadata Checklist",
+								"XDSDocumentEntry."+elementName, MessageType.Error);
+					}
+				}
+			}
+			
+		}
+	}
+
+	private void validateLocalizedStringHITSPC80_20_Table147(OMElement classElement, String errorCode, String elementName)
+	{
+		Iterator nameElementIter = classElement.getChildrenWithLocalName("Name");
+		if(!nameElementIter.hasNext())
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			OMElement nameElement = (OMElement) nameElementIter.next();
+			Iterator localIter = nameElement.getChildrenWithLocalName("LocalizedString");
+			if(!localIter.hasNext())
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+			else
+			{
+				OMElement valueElement = (OMElement)localIter.next();
+				OMAttribute attr = valueElement.getAttribute(new QName("value"));
+				if(attr == null || attr.getAttributeValue() == null)
+					errorRecorder.record(errorCode, "XDS Metadata Checklist",
+							"XDSDocumentEntry."+elementName, MessageType.Error);
+				else
+				{
+					if(!ValidationUtil.isValidHITSP_C80_20_Table2_147conceptName(attr.getAttributeValue()))
+					{
+						errorRecorder.record(errorCode, "XDS Metadata Checklist",
+								"XDSDocumentEntry."+elementName, MessageType.Error);
+					}
+				}
+			}
+			
+		}
+	}
+
+	private void validateLocalizedStringHITSPC80_20_Table149(OMElement classElement, String errorCode, String elementName)
+	{
+		Iterator nameElementIter = classElement.getChildrenWithLocalName("Name");
+		if(!nameElementIter.hasNext())
+			errorRecorder.record(errorCode, "XDS Metadata Checklist",
+					"XDSDocumentEntry."+elementName, MessageType.Error);
+		else
+		{
+			OMElement nameElement = (OMElement) nameElementIter.next();
+			Iterator localIter = nameElement.getChildrenWithLocalName("LocalizedString");
+			if(!localIter.hasNext())
+				errorRecorder.record(errorCode, "XDS Metadata Checklist",
+						"XDSDocumentEntry."+elementName, MessageType.Error);
+			else
+			{
+				OMElement valueElement = (OMElement)localIter.next();
+				OMAttribute attr = valueElement.getAttribute(new QName("value"));
+				if(attr == null || attr.getAttributeValue() == null)
+					errorRecorder.record(errorCode, "XDS Metadata Checklist",
+							"XDSDocumentEntry."+elementName, MessageType.Error);
+				else
+				{
+					if(!ValidationUtil.isValidHITSP_C80_20_Table2_149conceptName(attr.getAttributeValue()))
+					{
+						errorRecorder.record(errorCode, "XDS Metadata Checklist",
+								"XDSDocumentEntry."+elementName, MessageType.Error);
+					}
+				}
+			}
+			
+		}
+	}
+	
 	//rim:Name/rim:LocalizedString/@value MUST be present
 	private void validateLocalizedString(OMElement classElement, String errorCode, String elementName)
 	{
@@ -376,7 +702,7 @@ public class ExtrinsicObjectClassificationValidator {
 		else
 		{
 			OMElement nameElement = (OMElement) nameElementIter.next();
-			Iterator localIter = classElement.getChildrenWithLocalName("rim:LocalizedString");
+			Iterator localIter = nameElement.getChildrenWithLocalName("LocalizedString");
 			if(!localIter.hasNext())
 				errorRecorder.record(errorCode, "XDS Metadata Checklist",
 						"XDSDocumentEntry."+elementName, MessageType.Error);
@@ -402,7 +728,7 @@ public class ExtrinsicObjectClassificationValidator {
 		else
 		{
 			OMElement nameElement = (OMElement) nameElementIter.next();
-			Iterator localIter = classElement.getChildrenWithLocalName("rim:LocalizedString");
+			Iterator localIter = nameElement.getChildrenWithLocalName("LocalizedString");
 			if(!localIter.hasNext())
 				errorRecorder.record(errorCode, "XDS Metadata Checklist",
 						"XDSDocumentEntry."+elementName, MessageType.Error);

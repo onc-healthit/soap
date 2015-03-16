@@ -6,6 +6,7 @@ import gov.onc.xdrtesttool.resource.XDRMessages;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.xml.transform.StringSource;
 
 public class MessageReader {
@@ -86,7 +87,7 @@ public class MessageReader {
 		else if(item.getMessageType().equals(MessageType.Info))
 			str.append("severity=\"urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Info\"");	
 		str.append(" errorCode=\"" + item.getErrorCode() +"\"");
-		str.append(" codeContext=\"" + XDRMessages.instance.getErrorText(item.getErrorCode()) +"\"");
+		str.append(" codeContext=\"" + StringEscapeUtils.escapeXml(XDRMessages.instance.getErrorText(item.getErrorCode())) +"\"");
 		str.append(" location=\"" + item.getLocation() +"\"");
 		str.append(" />");
 		return str.toString();

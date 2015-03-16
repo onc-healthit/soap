@@ -140,12 +140,12 @@ public class XDRRequestValidator extends XDRValidator {
 		Iterator<SoapHeaderElement> iter = header.examineAllHeaderElements();
 		boolean found = false;
 		if (iter.hasNext()) {
+			QName soapEnvMustQ = new QName("http://www.w3.org/2003/05/soap-envelope", "mustUnderstand", "soapenv");
 			while (iter.hasNext()) {
 				SoapHeaderElement headerEle = iter.next();
 				if (headerEle.getName().getLocalPart().equals("Action")) {
 					found = true;
-					String attrValue = headerEle.getAttributeValue(new QName(
-							"mustUnderstand"));
+					String attrValue = headerEle.getAttributeValue(soapEnvMustQ);
 					String eleValue = headerEle.getText();
 					if (eleValue == null
 							|| !eleValue
@@ -196,7 +196,7 @@ public class XDRRequestValidator extends XDRValidator {
 								MessageType.Error);
 				} else {
 					Iterator xopElements = docElement
-							.getChildrenWithLocalName("include");
+							.getChildrenWithLocalName("Include");
 					if (!xopElements.hasNext()) {
 						errorRecorder.record("XDR_MSG_10_1",
 								"XDR Message Checklist", "Document",

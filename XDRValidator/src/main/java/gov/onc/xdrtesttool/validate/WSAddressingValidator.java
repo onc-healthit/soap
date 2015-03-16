@@ -306,8 +306,8 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			QName soapEnvMustQ = new QName("http://www.w3.org/2003/05/soap-envelope", "mustUnderstand", "soapenv");
+			OMAttribute understandAttr = toElement.getAttribute(soapEnvMustQ);
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_426", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:MessageID", MessageType.Error);

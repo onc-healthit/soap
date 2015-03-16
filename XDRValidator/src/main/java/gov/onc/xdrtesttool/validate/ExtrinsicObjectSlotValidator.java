@@ -164,9 +164,22 @@ public class ExtrinsicObjectSlotValidator {
 					"XDSDocumentEntry.serviceStartTime", MetadataType.instance.getMessageType(metadataType, "158"));
 	}
 
+/*
+"rim:Slot
+WHERE
+@name=""serviceStopTime"""
+
+ "Verify: rim:ValueList/rim:Value:
+- MUST be in HL7 V2 DTM (UTC) format
+- MUST be in past
+- MUST be >= serviceStartTime
+Description: XDSDocumentEntry.serviceStopTime metadata attribute.
+Example: ""20041225212010"""
+	
+ */
 	private void validateServiceStopTimeSlot(OMElement extrinsicObject) {
 		OMElement stopSlot = ValidationUtil.findSlot(extrinsicObject,
-				"serviceStartTime");
+				"serviceStopTime");
 		if (stopSlot == null)
 			errorRecorder.record("XDR_MSG_159", "XDS Metadata Checklist",
 					"XDSDocumentEntry.serviceStartTime", MetadataType.instance.getMessageType(metadataType, "159"));
@@ -224,9 +237,9 @@ public class ExtrinsicObjectSlotValidator {
 			errorRecorder.record("XDR_MSG_159_2", "XDS Metadata Checklist",
 					"XDSDocumentEntry.creationTime", MessageType.Error);
 
-		compare = startDate.compareTo(stopDate);
+		compare = stopDate.compareTo(startDate);
 
-		if (compare <= 0)
+		if (compare < 0)
 			errorRecorder.record("XDR_MSG_159_3", "XDS Metadata Checklist",
 					"XDSDocumentEntry.creationTime", MessageType.Error);
 	}
@@ -254,6 +267,26 @@ public class ExtrinsicObjectSlotValidator {
 		}
 	}
 
+/*
+"rim:Slot
+WHERE
+@name=""sourcePatientId"""
+
+ "Verify: rim:ValueList/rim:Value:
+- MUST be formatted in HL7 V2 CX type. This contains two parts formatted as """"ID^^^&amp;OIDofAA&amp;ISO""""
+  - OIDofAA: Authority Domain Id
+  - ID: An Id in the above domain
+- The values above are not further verified in this context.
+Description: XDSDocumentEntry.sourcePatientId metadata attribute.
+Example:
+<rim:ExternalIdentifier
+  identificationScheme=
+    """"urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446""""
+  value=""""6578946^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO""""
+  id=”ID_051""""
+</rim:ExternalIdentifier>"
+
+ */
 	private void validateSourcePatientIdSlot(OMElement extrinsicElement) {
 		OMElement slot = ValidationUtil.findSlot(extrinsicElement,
 				"sourcePatientId");
@@ -267,8 +300,8 @@ public class ExtrinsicObjectSlotValidator {
 						"XDSDocumentEntry.sourcePatientId", MessageType.Error);
 			else {
 				String valueStr = valueList.get(0);
-				int index1 = valueStr.indexOf("^^^&amp;");
-				int index2 = valueStr.indexOf("&amp;ISO");
+				int index1 = valueStr.indexOf("^^^&");
+				int index2 = valueStr.indexOf("&ISO");
 				if (index1 <= 0 || (index2 <= 0 || index2 <= index1))
 					errorRecorder.record("XDR_MSG_161_1",
 							"XDS Metadata Checklist",

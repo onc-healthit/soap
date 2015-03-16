@@ -63,8 +63,8 @@ public class XDSSubmissionSetClassificationValidator {
 			else
 			{
 				String valueStr = attr.getAttributeValue();
-				int index1 = valueStr.indexOf("^^^&amp;");
-				int index2 = valueStr.indexOf("&amp;ISO");
+				int index1 = valueStr.indexOf("^^^&");
+				int index2 = valueStr.indexOf("&ISO");
 				if (index1 <= 0 || (index2 <= 0 || index2 <= index1))
 					errorRecorder.record("XDR_MSG_196_1",
 							Constants.XDS_Metadata_Checklist,

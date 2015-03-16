@@ -151,6 +151,31 @@ public class XDSFolderValidator extends XDRValidator{
 		ValidateExternalIdentifier2(registryPackageElement);
 	}
 
+	/*
+	"Verify:
+	- @classifiedObject = rim:RegistryPackage/@id of the parent XDSSubmissionSet
+	- There MUST be a Slot element WHERE @name=""codingScheme"" AND rim:Slot/rim:ValueList/rim:Value is present
+	- rim:Name/rim:LocalizedString/@value MUST be present
+	- @nodeRepresentation is present
+	- The values above may be constrained by the XDS Affinity Domain.
+	
+	Description: XDSFolder.codeList metadata attribute. The set of codes specifying the type of clinical activity that resulted in placing XDS Documents in this XDS Folder.
+	
+	Example:
+	<rim:Classification id=""cl02""
+	  classificationScheme=“urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5”
+	  classifiedObject=""SS01""
+	  nodeRepresentation=""some value"">
+	  <rim:Slot name=""codingScheme"">
+	    <rim:ValueList>
+	      <rim:Value>some scheme</rim:Value>
+	    </rim:ValueList>
+	  </rim:Slot>
+	  <rim:Name>
+	    <rim:LocalizedString value=""some value description""/>
+	  </rim:Name>
+	</rim:Classification>"
+	 */
 	private void verifyClassification1(OMElement extrinsicObject,
 			OMElement classElement2) {
 		// @classifiedObject = the value of rim:ExtrinsicObject/@id
@@ -172,6 +197,28 @@ public class XDSFolderValidator extends XDRValidator{
 					"XDSSubmissionSet.nodeRepresentation", MessageType.Error);
 	}
 
+/*
+	"rim:ExternalIdentifier
+	WHERE
+	@identificationScheme= ""urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a"""
+
+	 "Verify:
+	- @value MUST be formatted in HL7 V2 CX type. This contains two parts formatted as ""ID^^^&amp;OIDofAA&amp;ISO""
+	  - OIDofAA: Authority Domain Id
+	  - ID: An Id in the above domain
+	- The values above are not further verified in this context.
+	
+	Description: XDSFolder.patientId metadata attribute. Represents the medical record identifier of subject of care at the document recipient.
+	
+	Example:
+	<rim:ExternalIdentifier
+	  identificationScheme=
+	    ""urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a""
+	  value=""6578946^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO""
+	  id=”ID_051""
+	</rim:ExternalIdentifier>"
+		
+ */
 	private void ValidateExternalIdentifier1(OMElement registryPackageElement)
 	{
 		OMElement element = ValidationUtil.findExternalIdentifierByScheme(registryPackageElement, "urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a");
@@ -187,8 +234,8 @@ public class XDSFolderValidator extends XDRValidator{
 			else
 			{
 				String valueStr = attr.getAttributeValue();
-				int index1 = valueStr.indexOf("^^^&amp;");
-				int index2 = valueStr.indexOf("&amp;ISO");
+				int index1 = valueStr.indexOf("^^^&");
+				int index2 = valueStr.indexOf("&ISO");
 				if (index1 <= 0 || (index2 <= 0 || index2 <= index1))
 					errorRecorder.record("XDR_MSG_208_1",
 							Constants.XDS_Metadata_Checklist,
@@ -198,6 +245,16 @@ public class XDSFolderValidator extends XDRValidator{
 		}
 	}
 
+	/*
+	"rim:ExternalIdentifier
+	WHERE
+	@identificationScheme= ""urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a"""
+	
+	"Verify:
+	- @value is OID with length <= 64
+	Description: XDSFolder.uniqueId metadata attribute. The globally unique identifier assigned by the document creator to this document.
+	Example: 1.3.6.1.4.1.21367.2005.3.7"
+	 */
 	private void ValidateExternalIdentifier2(OMElement registryPackageElement)
 	{
 		OMElement element = ValidationUtil.findExternalIdentifierByScheme(registryPackageElement, "urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a");
@@ -226,17 +283,17 @@ public class XDSFolderValidator extends XDRValidator{
 		// - MUST be a single value.
 		// - MUST be in DTM format.
 		// - MUST be a time in the past.
+		OMElement submissionSlot = ValidationUtil.findSlot(
+				registryPackageElement, "lastUpdateTime");
 		if (!ValidationUtil.isSlotUnique(registryPackageElement,
 				"lastUpdateTime"))
 			errorRecorder.record("XDS_MSG_203_1", Constants.XDS_Metadata_Checklist,
-					"XDSFolder.RegistryPackage.Slot.submissionTime",
+					"XDSFolder.RegistryPackage.Slot.lastUpdateTime",
 					MessageType.Error);
 		else {
-			OMElement submissionSlot = ValidationUtil.findSlot(
-					registryPackageElement, "lastUpdateTime");
 			if (submissionSlot == null) {
 				errorRecorder.record("XDR_MSG_203", Constants.XDS_Metadata_Checklist,
-						"XDSFolder.RegistryPackage.Slot.submissionTime",
+						"XDSFolder.RegistryPackage.Slot.lastUpdateTime",
 						MetadataType.instance.getMessageType(metadataType, "203"));
 				return;
 			}
@@ -245,7 +302,7 @@ public class XDSFolderValidator extends XDRValidator{
 					.getSlotValueList(submissionSlot);
 			if (valueList.size() == 0)
 				errorRecorder.record("XDR_MSG_203_2", Constants.XDS_Metadata_Checklist,
-						"XDSFolder.RegistryPackage.Slot.submissionTime",
+						"XDSFolder.RegistryPackage.Slot.lastUpdateTime",
 						MessageType.Error);
 
 			String attrValue = valueList.get(0);
@@ -253,10 +310,9 @@ public class XDSFolderValidator extends XDRValidator{
 			Date currDt = currDtCal.getTime();
 
 			if (!ValidationUtil.validateAndCompareUTCFormat(attrValue, currDt))
-				errorRecorder.record("XDR_MSG_203_2", Constants.XDS_Metadata_Checklist,
-						"XDSFolder.RegistryPackage.Slot.submissionTime",
+				errorRecorder.record("XDR_MSG_203_3", Constants.XDS_Metadata_Checklist,
+						"XDSFolder.RegistryPackage.Slot.lastUpdateTime",
 						MessageType.Error);
-
 		}
 
 	}
