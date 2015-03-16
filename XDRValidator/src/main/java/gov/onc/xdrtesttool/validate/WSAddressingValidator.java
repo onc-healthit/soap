@@ -11,6 +11,7 @@ import gov.onc.xdrtesttool.xml.XMLParser;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
 
 public class WSAddressingValidator extends XDRValidator {
@@ -22,22 +23,14 @@ public class WSAddressingValidator extends XDRValidator {
 		this.errorRecorder = errorRecorder;
 
 		try {
-			OMElement element = XMLParser.parseXMLSource(XMLParser
-					.getEnvelopeAsInputStream(soapMsg));
-			if(element == null)
-			{
-				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
-						"S:Envelope", MessageType.Error);
-				return;
-			}
-			OMElement header = null;
-			Iterator headerIter = element.getChildrenWithLocalName("Header");
-			if (!headerIter.hasNext()) {
+			SoapHeader soapHeader = soapMsg.getSoapHeader();
+			if (soapHeader == null) {
 				errorRecorder.record("XDR_MSG_412", "Direct XDR Checklist",
 						"S:Envelope", MessageType.Error);
 				return;
-			} else
-				header = (OMElement) headerIter.next();
+			}
+			OMElement header = XMLParser.parseXMLSource(soapHeader.getSource());
+			
 
 			// - @role SHOULD NOT be
 			// "http://www.w3.org/2003/05/soap-envelope/role/ultimateReceiver"

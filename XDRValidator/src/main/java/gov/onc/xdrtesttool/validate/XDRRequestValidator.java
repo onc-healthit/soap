@@ -203,7 +203,8 @@ public class XDRRequestValidator extends XDRValidator {
 								MessageType.Error);
 					} else {
 						OMElement xopElement = (OMElement) xopElements.next();
-						verifyMimePart(xopElement, errorRecorder);
+						//TODO
+						//verifyMimePart(xopElement, errorRecorder);
 					}
 				}
 				OMAttribute attr = docElement.getAttribute(new QName("id"));

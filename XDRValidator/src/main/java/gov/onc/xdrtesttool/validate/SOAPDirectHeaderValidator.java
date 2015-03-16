@@ -10,6 +10,7 @@ import gov.onc.xdrtesttool.xml.XMLParser;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
+import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
 
 public class SOAPDirectHeaderValidator extends XDRValidator{
@@ -20,22 +21,14 @@ public class SOAPDirectHeaderValidator extends XDRValidator{
 		this.errorRecorder = errorRecorder;
 
 		try {
-			OMElement element = XMLParser.parseXMLSource(XMLParser
-					.getEnvelopeAsInputStream(soapMsg));
-			if(element == null)
-			{
-				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
-						"S:Envelope", MessageType.Error);
-				return;
-			}
-			OMElement header = null;
-			Iterator headerIter = element.getChildrenWithLocalName("Header");
-			if (!headerIter.hasNext()) {
+			SoapHeader soapHeader = soapMsg.getSoapHeader();
+			if (soapHeader == null) {
 				errorRecorder.record("XDR_MSG_427", "Direct XDR Checklist",
 						"S:Envelope", MessageType.Error);
 				return;
-			} else
-				header = (OMElement) headerIter.next();
+			}
+			OMElement header = XMLParser.parseXMLSource(soapHeader.getSource());
+
 			
 			if(header == null)
 				errorRecorder.record("XDR_MSG_427", "Direct XDR Checklist",

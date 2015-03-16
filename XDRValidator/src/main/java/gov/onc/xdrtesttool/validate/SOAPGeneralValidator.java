@@ -10,6 +10,8 @@ import gov.onc.xdrtesttool.xml.XMLParser;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+import org.springframework.ws.soap.SoapBody;
+import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
 
 public class SOAPGeneralValidator extends XDRValidator {
@@ -21,63 +23,23 @@ public class SOAPGeneralValidator extends XDRValidator {
 		this.soapMsg = soapMsg;
 
 		try {
-			OMElement element = XMLParser.parseXMLSource(XMLParser.getEnvelopeAsInputStream(soapMsg));
-			if(element == null)
-			{
-				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+
+			SoapHeader soapHeader = soapMsg.getSoapHeader();
+			if (soapHeader == null) {
+				errorRecorder.record("XDR_MSG_411", "Direct XDR Checklist",
 						"S:Envelope", MessageType.Error);
 				return;
 			}
-			Iterator iter = element.getChildElements();
-			OMElement header = null;
-			OMElement body = null;
-			if(iter.hasNext())
-			{
-				header = (OMElement) iter.next();
-				if(!header.getLocalName().equals("Header"))
-					errorRecorder
-					.record("XDR_MSG_411",
-							"Direct XDR Checklist",
-							"S:Envelope",
-							MessageType.Error);
+			OMElement header = XMLParser.parseXMLSource(soapHeader.getSource());
+			
+			SoapBody soapBody = soapMsg.getSoapBody();
+			if (soapBody == null) {
+				errorRecorder.record("XDR_MSG_412", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
 			}
-			else
-			{
-				errorRecorder
-				.record("XDR_MSG_411",
-						"Direct XDR Checklist",
-						"S:Envelope",
-						MessageType.Error);
-			}
+			OMElement body = XMLParser.parseXMLSource(soapBody.getSource());
 
-			if(iter.hasNext())
-			{
-				body = (OMElement) iter.next();
-			if(!body.getLocalName().equals("Body"))
-				errorRecorder
-				.record("XDR_MSG_411",
-						"Direct XDR Checklist",
-						"S:Envelope",
-						MessageType.Error);
-			}
-			else
-			{
-				errorRecorder
-				.record("XDR_MSG_411",
-						"Direct XDR Checklist",
-						"S:Envelope",
-						MessageType.Error);
-			}
-
-			Iterator headerIter = element.getChildrenWithLocalName("Header");
-			if(!headerIter.hasNext())
-				errorRecorder
-				.record("XDR_MSG_412",
-						"Direct XDR Checklist",
-						"S:Envelope",
-						MessageType.Error);
-			else
-				header = (OMElement) headerIter.next();
 
 			//- @role SHOULD NOT be "http://www.w3.org/2003/05/soap-envelope/role/ultimateReceiver" (this is allowed but not recommended; should generate a warning).
 			//- There may be other instances of this element with different @role values, but this checklist does not address them.
@@ -111,13 +73,15 @@ public class SOAPGeneralValidator extends XDRValidator {
 							MessageType.Info);
 				else
 				{
+					//TODO
+					/*
 					if(!(understandAttr.getAttributeValue().equals("1") || understandAttr.getAttributeValue().equals("true")))
 						errorRecorder
 						.record("XDR_MSG_414_1",
 								"Direct XDR Checklist",
 								"S:Envelope",
 								MessageType.Warning);
-						
+						*/
 				}
 				
 			}

@@ -193,82 +193,118 @@ public class ValidationUtil {
 	public static boolean isValidHITSP_C80_20_Table2_144conceptCode(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_144conceptCodes();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isValidHITSP_C80_20_Table2_151conceptCode(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_151conceptCodes();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isValidHITSP_C80_20_Table2_153conceptCode(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_153conceptCodes();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isValidHITSP_C80_20_Table2_147conceptCode(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_147conceptCodes();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 	
 	public static boolean isValidHITSP_C80_20_Table2_147conceptName(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_147conceptNames();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isValidHITSP_C80_20_Table2_149conceptName(String code)
 	{
 		List<String> codes = ResourceManager.instance.getHITSP_C80_20_Table2_149conceptNames();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isValidSNOMEDCTConceptId(String code)
 	{
 		List<String> codes = ResourceManager.instance.getSNOMEDCTConceptIds();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 	
 	public static boolean isValidConceptCode(String code)
 	{
 		List<String> codes = ResourceManager.instance.getConceptCodes();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 	
 	public static boolean isValidConceptNameSpecialityArea(String code)
 	{
 		List<String> codes = ResourceManager.instance.getConceptNameSpecialityAreas();
-		if(codes != null && codes.contains(code))
-			return true;
-		else
-			return false;
+		Iterator iter = codes.iterator();
+		while(iter.hasNext())
+		{
+			String value = (String) iter.next();
+			if(value.equals(code))
+				return true;
+		}
+		return false;
 	}
 	
 	public static OMElement findExternalIdentifierByScheme(OMElement extrinsicObject, String schemeValue)

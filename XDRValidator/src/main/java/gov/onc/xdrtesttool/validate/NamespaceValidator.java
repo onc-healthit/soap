@@ -10,6 +10,8 @@ import gov.onc.xdrtesttool.resource.MetadataType;
 import gov.onc.xdrtesttool.xml.XMLParser;
 
 import org.apache.axiom.om.OMElement;
+import org.springframework.ws.soap.SoapEnvelope;
+import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
 
 public class NamespaceValidator extends XDRValidator{
@@ -19,20 +21,17 @@ public class NamespaceValidator extends XDRValidator{
 			ValidationContext vContext) {
 		OMElement element=null;
 		try {
-				element = XMLParser.parseXMLSource(XMLParser
-						.getEnvelopeAsInputStream(soapMsg));
-				if(element == null)
-				{
-					errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
-							"S:Envelope", MessageType.Error);
-					return;
-				}
-				
+			SoapEnvelope soapEnvelope = soapMsg.getEnvelope();
+			if (soapEnvelope == null) {
+				errorRecorder.record("XDR_MSG_410", "Direct XDR Checklist",
+						"S:Envelope", MessageType.Error);
+				return;
+			}
+			
+			element = XMLParser.parseXMLSource(soapEnvelope.getSource());
+
 			setMetadataType(element);
 			ValidationUtil.validateNamespaces(element, errorRecorder);
-		} catch (IOException e) {
-			errorRecorder.record("INVALID_NS", soapMsg.toString(), soapMsg.toString(), MessageType.Error);
-			e.printStackTrace();
 		} catch (Exception e) {
 			errorRecorder.record("INVALID_NS", soapMsg.toString(), soapMsg.toString(), MessageType.Error);
 			e.printStackTrace();

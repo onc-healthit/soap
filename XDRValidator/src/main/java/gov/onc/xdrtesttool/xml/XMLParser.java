@@ -24,6 +24,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.soap.SOAPModelBuilder;
+import org.springframework.ws.soap.SoapEnvelope;
 import org.springframework.ws.soap.SoapMessage;
 
 public class XMLParser {

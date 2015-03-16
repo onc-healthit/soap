@@ -125,8 +125,8 @@ public class XDSDocumentEntryValidator extends XDRValidator {
 				extrinsicElement, errorRecorder);
 		validateName(extrinsicElement);
 		validateDescription(extrinsicElement);
-		new ExtrinsicObjectClassificationValidator().validate(
-				extrinsicElement, errorRecorder);
+		//new ExtrinsicObjectClassificationValidator().validate(
+		//		extrinsicElement, errorRecorder);
 		
 	}
 	private void validateName(OMElement extrinsicElement) {
