@@ -25,7 +25,7 @@
             <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_12"/>
         </property>
 	</bean>
-	
+
    	<bean class="org.springframework.ws.server.endpoint.mapping.SimpleMethodEndpointMapping">
 		<property name="endpoints">
 			<ref bean="XDRServiceEndpoint"/>

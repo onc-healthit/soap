@@ -1,18 +1,16 @@
 package gov.onc.xdrtesttool.validate;
 
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
 import gov.onc.xdrtesttool.error.MessageRecorder;
 import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
 import gov.onc.xdrtesttool.xml.XMLParser;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.springframework.ws.soap.SoapBody;
 import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
+
+import javax.xml.namespace.QName;
+import java.util.Iterator;
 
 public class SOAPGeneralValidator extends XDRValidator {
 
@@ -54,7 +52,7 @@ public class SOAPGeneralValidator extends XDRValidator {
 			else
 			{
 				OMElement toElement = (OMElement)toIter.next();
-				OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+				OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 				if(roleAttr != null)
 					errorRecorder
 					.record("XDR_MSG_413_1",
@@ -64,7 +62,7 @@ public class SOAPGeneralValidator extends XDRValidator {
 
 				//Verify: @mustUnderstand is either "true", "1" "false" or "0".  
 				//SHOULD NOT be "false" or "0" (this is allowed but not recommended; should generate a warning).
-				OMAttribute understandAttr = toElement.getAttribute(new QName("mustUnderstand"));
+				OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 				if(understandAttr == null)
 					errorRecorder
 					.record("XDR_MSG_414",

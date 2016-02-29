@@ -1,50 +1,33 @@
 package gov.onc.xdrtesttool.xml;
 
-import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
-
-import java.net.InetSocketAddress;
-import java.util.Iterator;
-import java.util.UUID;
-
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNamespace;
 import org.apache.log4j.Logger;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapHeaderElement;
 import org.springframework.ws.soap.SoapMessage;
+import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.soap.server.SoapEndpointInterceptor;
 import org.springframework.ws.transport.context.TransportContext;
 import org.springframework.ws.transport.context.TransportContextHolder;
 import org.springframework.ws.transport.http.HttpServletConnection;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.StringWriter;
-import java.util.Date;
+import javax.xml.namespace.QName;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.UUID;
 
 public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 	private final Logger log = Logger.getLogger(this.getClass().toString());
 
-    @Override
+	@Override
     public boolean understands(SoapHeaderElement header) {
         return true;
     }
@@ -205,7 +188,16 @@ public class XdrMustUnderstandInterceptor implements SoapEndpointInterceptor {
 	@Override
 	public boolean handleResponse(MessageContext messageContext, Object endpoint)
 			throws Exception {
-		// TODO Auto-generated method stub
+		SaajSoapMessage message = (SaajSoapMessage)messageContext.getResponse();
+		message.convertToXopPackage();
+		SoapHeader soapHeader = message.getSoapHeader();
+
+		QName wsaActionQName = new QName("http://www.w3.org/2005/08/addressing", "Action", "wsa");
+		SoapHeaderElement wsaAction =  soapHeader.addHeaderElement(wsaActionQName);
+		wsaAction.setText("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse");
+				//.addAttribute(new QName("http://www.w3.org/2005/08/addressing", "Action", "wsa"), "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse");
+
+		//message.getSoapHeader().addHeaderElement(wsaActionQName);
 		return true;
 	}
 

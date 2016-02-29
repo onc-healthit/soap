@@ -1,18 +1,16 @@
 package gov.onc.xdrtesttool.validate;
 
-import java.util.Iterator;
-
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.namespace.QName;
-
 import gov.onc.xdrtesttool.error.MessageRecorder;
 import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
 import gov.onc.xdrtesttool.xml.XMLParser;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.springframework.ws.soap.SoapHeader;
 import org.springframework.ws.soap.SoapMessage;
+
+import javax.ws.rs.core.UriBuilder;
+import javax.xml.namespace.QName;
+import java.util.Iterator;
 
 public class WSAddressingValidator extends XDRValidator {
 
@@ -106,7 +104,7 @@ public class WSAddressingValidator extends XDRValidator {
 				errorRecorder.record("XDR_MSG_413", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:To", MessageType.Error);
 			}
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_413_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:To", MessageType.Warning);
@@ -114,8 +112,7 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_414", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:To", MessageType.Info);
@@ -143,7 +140,7 @@ public class WSAddressingValidator extends XDRValidator {
 				errorRecorder.record("XDR_MSG_417", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:From", MessageType.Error);
 			}
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_417_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:From", MessageType.Warning);
@@ -151,8 +148,7 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_418", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:From", MessageType.Info);
@@ -177,7 +173,7 @@ public class WSAddressingValidator extends XDRValidator {
 		else {
 			OMElement toElement = (OMElement) toIter.next();
 
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_419_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:ReplyTo", MessageType.Warning);
@@ -190,8 +186,7 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_420", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:ReplyTo", MessageType.Error);
@@ -214,7 +209,7 @@ public class WSAddressingValidator extends XDRValidator {
 		else {
 			OMElement toElement = (OMElement) toIter.next();
 
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_421_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:FaultTo", MessageType.Warning);
@@ -227,8 +222,7 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_422", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:FaultTo", MessageType.Info);
@@ -251,7 +245,7 @@ public class WSAddressingValidator extends XDRValidator {
 		else {
 			OMElement toElement = (OMElement) toIter.next();
 
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_423_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:RelatesTo",
@@ -266,8 +260,7 @@ public class WSAddressingValidator extends XDRValidator {
 			// Verify: @mustUnderstand is either "true", "1" "false" or "0".
 			// SHOULD NOT be "false" or "0" (this is allowed but not
 			// recommended; should generate a warning).
-			OMAttribute understandAttr = toElement.getAttribute(new QName(
-					"mustUnderstand"));
+			OMAttribute understandAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","mustUnderstand"));
 			if (understandAttr == null)
 				errorRecorder.record("XDR_MSG_424", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:RelatesTo", MessageType.Error);
@@ -290,7 +283,7 @@ public class WSAddressingValidator extends XDRValidator {
 		else {
 			OMElement toElement = (OMElement) toIter.next();
 
-			OMAttribute roleAttr = toElement.getAttribute(new QName("role"));
+			OMAttribute roleAttr = toElement.getAttribute(new QName("http://www.w3.org/2003/05/soap-envelope","role"));
 			if (roleAttr != null)
 				errorRecorder.record("XDR_MSG_425_1", "Direct XDR Checklist",
 						"S:Envelope/S:Header/wsa:MessageID",

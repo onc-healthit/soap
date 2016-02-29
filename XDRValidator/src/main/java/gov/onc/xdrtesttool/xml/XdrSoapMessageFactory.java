@@ -1,19 +1,18 @@
 package gov.onc.xdrtesttool.xml;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.SoapMessageFactory;
 import org.springframework.ws.soap.SoapVersion;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.TransportInputStream;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class XdrSoapMessageFactory implements SoapMessageFactory,
 		InitializingBean {

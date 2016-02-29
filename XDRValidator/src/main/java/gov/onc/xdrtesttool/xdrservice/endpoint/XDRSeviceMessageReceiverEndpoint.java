@@ -1,62 +1,32 @@
 package gov.onc.xdrtesttool.xdrservice.endpoint;
 
 import gov.onc.xdrtesttool.error.MessageReader;
-import gov.onc.xdrtesttool.error.MessageRecorderItem;
 import gov.onc.xdrtesttool.error.XDRMessageRecorder;
-import gov.onc.xdrtesttool.error.MessageRecorderItem.MessageType;
-import gov.onc.xdrtesttool.resource.MetadataType;
-import gov.onc.xdrtesttool.resource.ResourceManager;
-import gov.onc.xdrtesttool.validate.ValidationUtil;
 import gov.onc.xdrtesttool.validate.XDRValidator;
-import gov.onc.xdrtesttool.xml.XMLParser;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import org.springframework.ws.soap.SoapBody;
-import org.springframework.ws.soap.SoapHeader;
-import org.springframework.ws.soap.SoapHeaderElement;
 import org.springframework.ws.soap.SoapMessage;
-import org.springframework.ws.transport.WebServiceMessageReceiver;
+import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.springframework.xml.transform.StringSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.ws.soap.Addressing;
 import javax.xml.ws.soap.SOAPBinding;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Endpoint(value = SOAPBinding.SOAP12HTTP_BINDING)
+@Endpoint(value = SOAPBinding.SOAP12HTTP_MTOM_BINDING)
 @Addressing(enabled=true, required=true)
 public class XDRSeviceMessageReceiverEndpoint {
 	private final Logger log = Logger.getLogger(this.getClass().toString());
@@ -76,8 +46,7 @@ public class XDRSeviceMessageReceiverEndpoint {
 		this.validators = validators;
 	}
 
-	public @ResponsePayload
-	Source handleProvideAndRegisterDocumentSetRequest(
+	public @ResponsePayload Source handleProvideAndRegisterDocumentSetRequest(
 			@RequestPayload Source source, MessageContext messageContext)
 			throws Exception {
 
